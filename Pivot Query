@@ -1,0 +1,10 @@
+select *,concat('Price',RANK() OVER (PARTITION BY i.REFERENCE_NO ORDER BY i.TASK_ID 
+ DESC)) AS Rank  into #temp from [dbo].[Table_1] i
+
+ select REFERENCE_NO,Price1,Price2,Price3 from 
+   (
+    select REFERENCE_NO,TASK_ID,Rank from #temp
+    ) as cte 
+    PIVOT (SUM(TASK_ID)
+    FOR rank IN (Price1,Price2,Price3 ))
+    as PVT
